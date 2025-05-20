@@ -1,0 +1,68 @@
+<index html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>Screen 탭 실시간 화면</title>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 30px;
+      background: #f4f4f4;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      background: #fff;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+    }
+    th {
+      background-color: #007bff;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <h2>📺 실시간 Screen 데이터</h2>
+  <div id="table-container">로딩 중...</div>
+
+  <script>
+    // Firebase 설정
+    const firebaseConfig = {
+      databaseURL: "https://screen-sync-50fc1-default-rtdb.firebaseio.com"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    // 실시간 리스너
+    db.ref("screen").on("value", (snapshot) => {
+      const data = snapshot.val();
+      if (!data) {
+        document.getElementById("table-container").innerHTML = "<p>데이터가 없습니다.</p>";
+        return;
+      }
+
+      let html = "<table>";
+      data.forEach((row, i) => {
+        html += "<tr>";
+        row.forEach(cell => {
+          html += i === 0
+            ? `<th>${cell}</th>` // 첫 번째 행은 헤더
+            : `<td>${cell}</td>`;
+        });
+        html += "</tr>";
+      });
+      html += "</table>";
+
+      document.getElementById("table-container").innerHTML = html;
+    });
+  </script>
+</body>
+</html>
