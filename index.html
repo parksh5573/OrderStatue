@@ -1,0 +1,38 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Screen 데이터 보기</title>
+  </head>
+  <body>
+    <h2>🖥️ 실시간 Screen 데이터</h2>
+    <div id="screen-data">로딩 중...</div>
+
+    <!-- Firebase 연결을 위한 스크립트들 -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database.js"></script>
+
+    <script>
+      // 1. Firebase 설정: 당신의 프로젝트 정보
+      const firebaseConfig = {
+        databaseURL: "https://screen-sync-50fc1-default-rtdb.firebaseio.com/"
+      };
+
+      // 2. Firebase 앱 초기화
+      const app = firebase.initializeApp(firebaseConfig);
+
+      // 3. 실시간 데이터베이스 연결 객체 만들기
+      const db = firebase.database(app);
+
+      // 4. 'screen' 위치의 데이터에 접근
+      const screenRef = db.ref("screen");
+
+      // 5. 'screen' 데이터가 바뀔 때마다 자동으로 실행됨
+      screenRef.on("value", (snapshot) => {
+        const data = snapshot.val(); // 현재 값 가져오기
+        document.getElementById("screen-data").innerText = data || "데이터가 없습니다.";
+      });
+    </script>
+  </body>
+</html>
